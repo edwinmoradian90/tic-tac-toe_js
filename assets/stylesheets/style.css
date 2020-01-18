@@ -1,0 +1,35 @@
+/* General */
+* {
+    margin: 0;
+    padding:0;
+}
+
+/* Container */
+.container{
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Gameboard */
+.gameboard{
+    display: grid;
+    background-color: lightcoral;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.space{
+    height: 100px;
+    width: 100px;
+    background-color: darkorange;
+}
+
+.space:hover{
+    cursor: pointer;
+    background-color: darksalmon;
+}
