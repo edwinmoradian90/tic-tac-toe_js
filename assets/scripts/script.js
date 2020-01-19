@@ -71,12 +71,12 @@ const Gameboard = (function(){
 
 const Game = (function(){
     
-    const players = [
+    let players = [
         Player('', 'x', 1), 
         Player('','o', 2),
     ];
 
-    const currentPlayer = '';
+    let currentPlayer = '';
 
     const _winningMoves = [
         [0, 1, 2], 
@@ -103,18 +103,18 @@ const Game = (function(){
     }
 
     const swapPlayer = function() {
-        this.currentPlayer = (this.currentPlayer.id == 1) 
-            ? players[1] 
-            : players[0];
+        Game.currentPlayer = (Game.currentPlayer.id == 1) 
+            ? Game.players[1] 
+            : Game.players[0];
     }
 
     const _winCondition = function() {
         const arrayMatching = Gameboard.indexArray(Game.currentPlayer.piece),
             matched = _winningMoves.map(array => array
                 .filter(array => arrayMatching.includes(array)))
-                .filter(array => array.length === 3);
+                .filter(array => array.length === 3),
         
-        const result = matched.length > 0
+            result = matched.length > 0
             ? true 
             : false;
         
@@ -122,7 +122,7 @@ const Game = (function(){
     }
 
     const _draw = function() {
-        const text = 'Gameover! The game is a draw.',
+        const text = 'The game is a draw.',
             gameResults = document.querySelector('.game_results'),
             outcomeDraw = document.createTextNode(text);
 
@@ -130,14 +130,14 @@ const Game = (function(){
     }
 
     const _endGame = function() {
-        const winner = Game.currentPlayer,
-            text = `Gameover! ${winner.name} is the winner.`,
+        console.log(this)
+        const text = `${Game.currentPlayer.name} is the winner.`,
             gameResults = document.querySelector('.game_results'),
             outcomeWin  = document.createTextNode(text);
 
         gameResults.appendChild(outcomeWin);
+        View.setEndGameView();
     }
-
 
     const start = function() {
         View.setGameView();
@@ -154,10 +154,17 @@ const Game = (function(){
         if(Gameboard.isFull()){
             _draw();
         } 
-        else {
+        else 
+        {
             this.currentPlayer.turn += 1;
-            this.swapPlayer();
+            swapPlayer();
         };
+    }
+
+    const reset = function() {
+        View.reset();
+        Gameboard.reset();
+        this.currentPlayer = this.players[0]
     }
 
     const initialize = function() {
@@ -172,6 +179,7 @@ const Game = (function(){
         swapPlayer,
         move,
         update,
+        reset,
         initialize,
     };
 })();
@@ -184,25 +192,38 @@ const Game = (function(){
 
 const View = (function() {
 
-    const startButton  = document.querySelector('.start_button'),
-        rematchButton  = document.querySelector('.rematch'),
-        gameboardView  = document.querySelector('.gameboard'),
-        playerFormView = document.querySelector('.player_form'),
-        scoreboardView = document.querySelector('.scoreboard'),
-        playerOneInput = document.querySelector('.player_one_input'),
-        playerTwoInput = document.querySelector('.player_two_input'),
-        playerOneShow  = document.querySelector('.player_one'),
-        playerTwoShow  = document.querySelector('.player_two'),
-        playerOneName  = playerOneInput.value,
-        playerTwoName  = playerTwoInput.value;
+    const startButton   = document.querySelector('.start_button'),
+        rematchButton   = document.querySelector('.rematch_button'),
+        gameboardView   = document.querySelector('.gameboard'),
+        scoreboardView  = document.querySelector('.scoreboard'),
+        gameResultsView = document.querySelector('.game_results'),
+        playerFormView  = document.querySelector('.player_form'),
+        playerOneShow   = document.querySelector('.player_one'),
+        playerTwoShow   = document.querySelector('.player_two');
 
     const getPlayerNames = function() {
+        const playerOneName = document.querySelector('.player_one_input').value;
+        const playerTwoName = document.querySelector('.player_two_input').value;
         return [playerOneName, playerTwoName];
     }
 
+    const _clearBoard = function() {
+        const spaces = document.querySelectorAll('.space');
+        spaces.forEach(space => {
+            space.innerHTML = '';
+        });
+    }
+
+    const _clearResults = function() {
+        gameResultsView.innerHTML = '';
+    }
+
     const displayPlayerNames = function() {
-        const nameOne = document.createTextNode(`Player 1: ${playerOneName}`);
-        const nameTwo = document.createTextNode(`Player 2: ${playerTwoName}`);
+        const playerOneName = document.querySelector('.player_one_input').value,
+            playerTwoName = document.querySelector('.player_two_input').value,
+            nameOne = document.createTextNode(`Player 1: ${playerOneName}`),
+            nameTwo = document.createTextNode(`Player 2: ${playerTwoName}`);
+
         playerOneShow.appendChild(nameOne);
         playerTwoShow.appendChild(nameTwo);
     }
@@ -211,11 +232,44 @@ const View = (function() {
         if(spaceIsEmpty){
             const space = document.querySelector( `[data-space='${move}']` ),                
                 piece = Game.currentPlayer.piece;
-            console.log(Game.currentPlayer)
 
             space.appendChild(document.createTextNode(piece));
         };
     };
+
+    const initializeView = function() {
+        playerFormView.style.display  = 'inline';
+        startButton.style.display     = 'inline';
+        gameboardView.style.display   = 'none';
+        scoreboardView.style.display  = 'none';
+        rematchButton.style.display   = 'none';
+        gameResultsView.style.display = 'none';
+        playerFormView.reset();
+        _setViewInteraction();
+    };
+
+    const setGameView = function() {
+        playerFormView.style.display  = 'none';
+        rematchButton.style.display   = 'none';
+        gameResultsView.style.display = 'none';
+        gameboardView.style.display   = 'grid';
+        scoreboardView.style.display  = 'block';
+
+    };
+
+    const setEndGameView = function() {
+        gameboardView.style.display   = 'none';
+        scoreboardView.style.display  = 'none';
+        rematchButton.style.display   = 'inline';
+        gameResultsView.style.display = 'block';
+        playerFormView.reset();
+    }
+
+    const reset = function() {
+        _clearBoard();
+        _clearResults();
+        setGameView();
+    }
 
     const _setViewInteraction = function() {
         document.addEventListener('click', (e) => {
@@ -223,26 +277,18 @@ const View = (function() {
             if(e.target.matches('.start_button')) {
                 e.preventDefault();
                 Game.start();
-            } else if(e.target.matches('.space')){
+            } else 
+            if(e.target.matches('.space')){
                 e.preventDefault();
                 Game.update(move);
-            };
+            } else 
+            if(e.target.matches('.rematch_button')){
+                Game.reset();
+                Gameboard.reset();
+                reset();
+            } 
         });
     }
-
-    const initializeView = function() {
-        playerFormView.style.display ='inline';
-        startButton.style.display = 'inline';
-        gameboardView.style.display = 'none';
-        scoreboardView.style.display = 'none';
-        _setViewInteraction();
-    };
-
-    const setGameView = function() {
-        playerFormView.style.display ='none';
-        gameboardView.style.display = 'grid';
-        scoreboardView.style.display = 'block';
-    };
 
     return {
         getPlayerNames,
@@ -250,6 +296,8 @@ const View = (function() {
         addMoveToGameboard,
         initializeView,
         setGameView,
+        reset,
+        setEndGameView,
     };
 })();
 
