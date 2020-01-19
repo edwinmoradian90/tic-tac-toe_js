@@ -109,8 +109,8 @@ const Game = (function(){
     }
 
     const _winCondition = function() {
-        let arrayMatching = Gameboard.indexArray(Game.currentPlayer.piece);
-        let matched = _winningMoves.map(array => array
+        const arrayMatching = Gameboard.indexArray(Game.currentPlayer.piece),
+            matched = _winningMoves.map(array => array
                 .filter(array => arrayMatching.includes(array)))
                 .filter(array => array.length === 3);
         
