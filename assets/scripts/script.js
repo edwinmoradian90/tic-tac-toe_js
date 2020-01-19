@@ -29,6 +29,15 @@ const Gameboard = (function(){
         return this.gameboard[move] == '';
     };
 
+    const indexArray = function(playerPiece) {
+        const indexArray = this.gameboard.map((piece, i) => {
+            if(piece == playerPiece) {
+                return i;
+            } 
+        });
+        return indexArray;
+    }
+
     const reset = function() {
         this.gameboard = Array(9).fill('');
     }
@@ -36,7 +45,7 @@ const Gameboard = (function(){
     const addMoveToGameboardArray = function(move, spaceIsEmpty){
         this.gameboard[move] = (spaceIsEmpty) 
             ? Game.currentPlayer.piece
-            : console.log('space not empty', gameboard, spaceIsEmpty);
+            : console.log('space not empty');
     };
 
     const initializeGameboard = function() {
@@ -47,6 +56,7 @@ const Gameboard = (function(){
         gameboard,
         isFull,
         emptySpace,
+        indexArray,
         reset,
         addMoveToGameboardArray,
         initializeGameboard,
@@ -98,17 +108,36 @@ const Game = (function(){
             : players[0];
     }
 
+    const _winCondition = function() {
+        let arrayMatching = Gameboard.indexArray(Game.currentPlayer.piece);
+        let matched = _winningMoves.map(array => array
+                .filter(array => arrayMatching.includes(array)))
+                .filter(array => array.length === 3);
+        
+        const result = matched.length > 0
+            ? true 
+            : false;
+        
+        return result;
+    }
+
     const _draw = function() {
-        const text = 'Gameover! The game is a draw.'
-        const gameResults = document.querySelector('.game_results'),
+        const text = 'Gameover! The game is a draw.',
+            gameResults = document.querySelector('.game_results'),
             outcomeDraw = document.createTextNode(text);
 
         gameResults.appendChild(outcomeDraw);
     }
 
-    const endGame = function() {
-        
+    const _endGame = function() {
+        const winner = Game.currentPlayer,
+            text = `Gameover! ${winner.name} is the winner.`,
+            gameResults = document.querySelector('.game_results'),
+            outcomeWin  = document.createTextNode(text);
+
+        gameResults.appendChild(outcomeWin);
     }
+
 
     const start = function() {
         View.setGameView();
@@ -119,6 +148,9 @@ const Game = (function(){
 
     const update = function(move) {
         this.move(move);
+        if(_winCondition()){
+            _endGame();
+        }else 
         if(Gameboard.isFull()){
             _draw();
         } 
