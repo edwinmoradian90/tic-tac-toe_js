@@ -1,3 +1,9 @@
+/*
+            ==============
+            Player Factory
+            ==============
+*/
+
 const Player = (name, piece, id) => {
     let score = 0;
     let turn = 0;
@@ -5,50 +11,62 @@ const Player = (name, piece, id) => {
     return { name, piece, id, score, turn };
 };
 
+/*
+            ================
+            Gameboard Module
+            ================
+*/
+
 const Gameboard = (function(){
-    let gameboard = Array(9).fill('');
- 
-    const initialize = function() {
-        const gameboard = 
-            document.querySelector('.gameboard');
-        Game.current = Game.players[0];
-        gameboard.addEventListener('click', (e) => {
-            let move = e.target.dataset.space;
-            if(e.target.matches('.space')){
-                Game.update(move);
-            };
-        });
-    };
-    
+    let gameboard = '';
+
     const isFull = function(){
-        return this.gameboard.includes('');
+        return !this.gameboard.includes('');
     }
 
     const emptySpace = function(move) {
+        console.log(this.gameboard)
         return this.gameboard[move] == '';
     };
 
+    const reset = function() {
+        this.gameboard = Array(9).fill('');
+    }
+
     const addMoveToGameboardArray = function(move, spaceIsEmpty){
         this.gameboard[move] = (spaceIsEmpty) 
-            ? Game.current.piece
-            : console.log('space not empty');
+            ? Game.currentPlayer.piece
+            : console.log('space not empty', gameboard, spaceIsEmpty);
     };
 
+    const initializeGameboard = function() {
+        this.gameboard = Array(9).fill('');
+    };
+    
     return {
-        isFull,
         gameboard,
+        isFull,
         emptySpace,
-        initialize,
+        reset,
         addMoveToGameboardArray,
+        initializeGameboard,
     };
 })();
 
+/*
+            ===========
+            Game Module
+            ===========
+*/
+
 const Game = (function(){
-    let players = [
+    
+    const players = [
         Player('', 'x', 1), 
         Player('','o', 2),
     ];
-    let current = '';
+
+    const currentPlayer = '';
 
     const _winningMoves = [
         [0, 1, 2], 
@@ -60,70 +78,153 @@ const Game = (function(){
         [0, 4, 8], 
         [2, 4, 6],
     ];
-    
-    const start = function() {
-        Gameboard.initialize();
-    };
-
-    const swapPlayer = function() {
-        this.current = (this.current.id == 1) 
-            ? players[1] 
-            : players[0];
-    }
 
     const move = function(move) {
-        const spaceIsEmpty = Gameboard.emptySpace(move);
-        console.log(spaceIsEmpty)
+        let spaceIsEmpty = Gameboard.emptySpace(move);
+        console.log(spaceIsEmpty, Gameboard.emptySpace(move))
         Gameboard.addMoveToGameboardArray(move, spaceIsEmpty);
         View.addMoveToGameboard(move, spaceIsEmpty);
     }
 
+    const _setPlayerNames = function() {
+        const playerNames = View.getPlayerNames();
+        players[0].name = playerNames[0] || '';
+        players[1].name = playerNames[1] || '';
+    }
+
+    const swapPlayer = function() {
+        this.currentPlayer = (this.currentPlayer.id == 1) 
+            ? players[1] 
+            : players[0];
+    }
+
     const _draw = function() {
-        
+        const text = 'Gameover! The game is a draw.'
+        const gameResults = document.querySelector('.game_results'),
+            outcomeDraw = document.createTextNode(text);
+
+        gameResults.appendChild(outcomeDraw);
     }
 
     const endGame = function() {
         
     }
 
+    const start = function() {
+        View.setGameView();
+        _setPlayerNames();
+        this.currentPlayer = this.players[0];
+        View.displayPlayerNames();
+    };  
+
     const update = function(move) {
-        const boardIsFull = Gameboard.isFull();
-        if(boardIsFull){
-            this._draw();
+        this.move(move);
+        if(Gameboard.isFull()){
+            _draw();
         } 
         else {
-            this.move(move);
-            this.current.turn += 1;
-            console.log(this.current.turn)
+            this.currentPlayer.turn += 1;
             this.swapPlayer();
         };
+    }
+
+    const initialize = function() {
+        View.initializeView();
+        Gameboard.initializeGameboard();
     }
 
     return {
         start,
         players,
-        current,
+        currentPlayer,
         swapPlayer,
         move,
         update,
+        initialize,
     };
 })();
 
-const View = (function(){
+/*
+            ===========
+            View Module
+            ===========
+*/
 
-    const addMoveToGameboard = function(move, spaceIsEmpty){
+const View = (function() {
+
+    const startButton  = document.querySelector('.start_button'),
+        rematchButton  = document.querySelector('.rematch'),
+        gameboardView  = document.querySelector('.gameboard'),
+        playerFormView = document.querySelector('.player_form'),
+        scoreboardView = document.querySelector('.scoreboard'),
+        playerOneInput = document.querySelector('.player_one_input'),
+        playerTwoInput = document.querySelector('.player_two_input'),
+        playerOneShow  = document.querySelector('.player_one'),
+        playerTwoShow  = document.querySelector('.player_two'),
+        playerOneName  = playerOneInput.value,
+        playerTwoName  = playerTwoInput.value;
+
+    const getPlayerNames = function() {
+        return [playerOneName, playerTwoName];
+    }
+
+    const displayPlayerNames = function() {
+        const nameOne = document.createTextNode(`Player 1: ${playerOneName}`);
+        const nameTwo = document.createTextNode(`Player 2: ${playerTwoName}`);
+        playerOneShow.appendChild(nameOne);
+        playerTwoShow.appendChild(nameTwo);
+    }
+
+    const addMoveToGameboard = function(move, spaceIsEmpty) {
         if(spaceIsEmpty){
-            const space = 
-                document.querySelector( `[data-space='${move}']` );
-            const piece = Game.current.piece;
+            const space = document.querySelector( `[data-space='${move}']` ),                
+                piece = Game.currentPlayer.piece;
+            console.log(Game.currentPlayer)
+
             space.appendChild(document.createTextNode(piece));
         };
     };
 
+    const _setViewInteraction = function() {
+        document.addEventListener('click', (e) => {
+            let move = e.target.dataset.space;
+            if(e.target.matches('.start_button')) {
+                e.preventDefault();
+                Game.start();
+            } else if(e.target.matches('.space')){
+                e.preventDefault();
+                Game.update(move);
+            };
+        });
+    }
+
+    const initializeView = function() {
+        playerFormView.style.display ='inline';
+        startButton.style.display = 'inline';
+        gameboardView.style.display = 'none';
+        scoreboardView.style.display = 'none';
+        _setViewInteraction();
+    };
+
+    const setGameView = function() {
+        playerFormView.style.display ='none';
+        gameboardView.style.display = 'grid';
+        scoreboardView.style.display = 'block';
+    };
+
     return {
-        addMoveToGameboard
+        getPlayerNames,
+        displayPlayerNames,
+        addMoveToGameboard,
+        initializeView,
+        setGameView,
     };
 })();
 
-Game.start();
-console.log(Game.current)
+/*
+            ================
+            Game initializer
+            ================
+*/
+
+Game.initialize();

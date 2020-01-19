@@ -10,6 +10,11 @@
     <body>
         <div class='container'>
             <h1 class='title'>Tic tac toe</h1>
+            <form type="form" class="player_form">
+                <input type="text" class="player_one_input" placeholder="Player 1">
+                <input type="text" class="player_two_input" placeholder="Player 2">
+                <button class="start_button">Start</button>
+            </form>
             <div class="gameboard">
                 <div class="space" data-space='0'></div>
                 <div class="space" data-space='1' ></div>
@@ -24,12 +29,13 @@
 
             <div class="scoreboard">
                 <div class="player1">
-                    <h3 class='player1'>Player 1</h3>
+                    <h3 class='player_one'></h3>
                 </div>
                 <div class="player2">
-                    <h3 class='player2'>Player 2</h3>
+                    <h3 class='player_two'></h3>
                 </div>
             </div>
+            <div class="game_results"></div>
         </div>
         <script src="./assets/scripts/script.js"></script>
     </body>
