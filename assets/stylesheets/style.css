@@ -133,14 +133,17 @@ body {
 .player_one{
     color: white;
     font-size: 2vw;
+    padding: 20px;
 }
 
 /* Player two */
 .player_two{
     color: white;
     font-size: 2vw;
+    padding: 20px;
 }
 
+/* Buttons */
 .start_button{
     background-color: white;
     border: 0;
@@ -159,8 +162,9 @@ body {
     background-color: white;
     border: 0;
     border-radius: 5px;
-    color: lightskyblue;
+    color:lightskyblue;
     height: 3vw;
+    margin:auto;
     width: 8vw;
 }
 
@@ -169,9 +173,37 @@ body {
     cursor: pointer;
 }
 
+.end_button {
+    background: white;
+    border: 0;
+    border-radius: 5px;
+    color: lightskyblue;
+    margin:auto;
+    height: 3vw;
+    width: 8vw;
+}
+
+.end_button:hover {
+    box-shadow: 1px 1px 10px white;
+    cursor: pointer;
+}
+
 /* Scoreboard */
 .scoreboard {
-    padding-bottom: 40px;
+    
+}
+
+.game_container{
+    display:flex;
+}
+
+.user_info{
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    margin-right: 30px;
+    width: 100%;
+    max-width: 400px;
 }
 
 /* Gameboard */
@@ -183,6 +215,7 @@ body {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 10px;
+    margin-right: 50%;
     max-width: 455px;
     width: 100%;
     animation: shadow-pulse 3s 1;
@@ -229,12 +262,10 @@ body {
 @-webkit-keyframes shadow-pulse
 {
      0% {
-         margin-right: 100%;  
          background-color: pink;
          box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
      }
      100% {
-         margin-right: 0%;
          background-color: lightskyblue;
          box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
      }
@@ -242,12 +273,10 @@ body {
 @-moz-keyframes shadow-pulse
 {
      0% {
-         margin-right: 100%;  
          background-color: pink;
          box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
      }
      100% {
-         margin-right: 0%;
          background-color: lightskyblue;
          box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
      }
@@ -256,12 +285,10 @@ body {
 @keyframes shadow-pulse
 {
      0% {
-         margin-right: 100%;  
          background-color: pink;
          box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
      }
      100% {
-         margin-right: 0%;
          background-color: lightskyblue;
          box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
      }

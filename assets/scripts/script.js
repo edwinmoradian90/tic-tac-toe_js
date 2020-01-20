@@ -18,14 +18,19 @@ const Player = (name, piece, id) => {
 */
 
 const Gameboard = (function(){
-    let gameboard = '';
+    var gameboard = '';
 
     const isFull = function(){
-        return !this.gameboard.includes('');
+        const isFull = Gameboard.gameboard.filter(space => {
+            return space == ""
+        }),
+            result = (isFull.length == 0) 
+                ? true
+                : false;
+        return result;
     }
 
     const emptySpace = function(move) {
-        console.log(this.gameboard)
         return this.gameboard[move] == '';
     };
 
@@ -91,7 +96,6 @@ const Game = (function(){
 
     const move = function(move) {
         let spaceIsEmpty = Gameboard.emptySpace(move);
-        console.log(spaceIsEmpty, Gameboard.emptySpace(move))
         Gameboard.addMoveToGameboardArray(move, spaceIsEmpty);
         View.addMoveToGameboard(move, spaceIsEmpty);
     }
@@ -100,6 +104,11 @@ const Game = (function(){
         const playerNames = View.getPlayerNames();
         players[0].name = playerNames[0] || '';
         players[1].name = playerNames[1] || '';
+    }
+
+    const removePlayerNames = function() {
+        players[0].name = '';
+
     }
 
     const swapPlayer = function() {
@@ -127,10 +136,10 @@ const Game = (function(){
             outcomeDraw = document.createTextNode(text);
 
         gameResults.appendChild(outcomeDraw);
+        View.setEndGameView();
     }
 
     const _endGame = function() {
-        console.log(this)
         const text = `${Game.currentPlayer.name} is the winner.`,
             gameResults = document.querySelector('.game_results'),
             outcomeWin  = document.createTextNode(text);
@@ -150,12 +159,10 @@ const Game = (function(){
         this.move(move);
         if(_winCondition()){
             _endGame();
-        }else 
+        } else 
         if(Gameboard.isFull()){
             _draw();
-        } 
-        else 
-        {
+        } else {
             this.currentPlayer.turn += 1;
             swapPlayer();
         };
@@ -164,7 +171,7 @@ const Game = (function(){
     const reset = function() {
         View.reset();
         Gameboard.reset();
-        this.currentPlayer = this.players[0]
+        this.currentPlayer = this.players[0];
     }
 
     const initialize = function() {
@@ -175,6 +182,7 @@ const Game = (function(){
     return {
         start,
         players,
+        removePlayerNames,
         currentPlayer,
         swapPlayer,
         move,
@@ -194,12 +202,12 @@ const View = (function() {
 
     const startButton   = document.querySelector('.start_button'),
         rematchButton   = document.querySelector('.rematch_button'),
+        endGameButton   = document.querySelector('.end_button');
         gameboardView   = document.querySelector('.gameboard'),
         scoreboardView  = document.querySelector('.scoreboard'),
+        userInfoBox     = document.querySelector('.user_info'),
         gameResultsView = document.querySelector('.game_results'),
-        playerFormView  = document.querySelector('.player_form'),
-        playerOneShow   = document.querySelector('.player_one'),
-        playerTwoShow   = document.querySelector('.player_two');
+        _playerFormView = document.querySelector('.player_form');
 
     const getPlayerNames = function() {
         const playerOneName = document.querySelector('.player_one_input').value;
@@ -218,9 +226,24 @@ const View = (function() {
         gameResultsView.innerHTML = '';
     }
 
+    const _clearPlayers = function() {
+        const playerOneShow = document.querySelector('.player_one'),
+            playerTwoShow = document.querySelector('.player_two');
+        playerOneShow.innerHTML = '';
+        playerTwoShow.innerHTML = '';
+    }
+
+    const _clearView = function() {
+        _clearBoard();
+        _clearResults();
+        _clearPlayers();
+    }
+
     const displayPlayerNames = function() {
         const playerOneName = document.querySelector('.player_one_input').value,
             playerTwoName = document.querySelector('.player_two_input').value,
+            playerOneShow = document.querySelector('.player_one'),
+            playerTwoShow = document.querySelector('.player_two'),
             nameOne = document.createTextNode(`Player 1: ${playerOneName}`),
             nameTwo = document.createTextNode(`Player 2: ${playerTwoName}`);
 
@@ -238,31 +261,46 @@ const View = (function() {
     };
 
     const initializeView = function() {
-        playerFormView.style.display  = 'inline';
+        _playerFormView.style.display = 'inline';
         startButton.style.display     = 'inline';
+        endGameButton.style.display   = 'none';
         gameboardView.style.display   = 'none';
         scoreboardView.style.display  = 'none';
         rematchButton.style.display   = 'none';
         gameResultsView.style.display = 'none';
-        playerFormView.reset();
+        _clearView();
+        _clearPlayers();
+        _clearResults();
+        _playerFormView.reset();
+        _removeViewInteraction();
         _setViewInteraction();
     };
 
     const setGameView = function() {
-        playerFormView.style.display  = 'none';
-        rematchButton.style.display   = 'none';
-        gameResultsView.style.display = 'none';
-        gameboardView.style.display   = 'grid';
-        scoreboardView.style.display  = 'block';
+        _playerFormView.style.display  = 'none';
+        rematchButton.style.display    = 'inline';
+        endGameButton.style.display    = 'inline';
+        gameResultsView.style.display  = 'none';
+        gameboardView.style.display    = 'grid';
+        scoreboardView.style.display   = 'block';
 
     };
 
     const setEndGameView = function() {
-        gameboardView.style.display   = 'none';
-        scoreboardView.style.display  = 'none';
-        rematchButton.style.display   = 'inline';
-        gameResultsView.style.display = 'block';
-        playerFormView.reset();
+        rematchButton.style.background   = 'white';
+        rematchButton.style.color        = 'lightskyblue';
+        rematchButton.style.marginBottom = '20px';
+        rematchButton.style.marginTop    = '40px';
+        endGameButton.style.display      = 'inline';
+        endGameButton.style.background   = 'white';
+        endGameButton.style.color        = 'lightskyblue';
+        userInfoBox.style.background     = 'lightskyblue';
+        gameboardView.style.display      = 'none';
+        scoreboardView.style.display     = 'none';
+        rematchButton.style.display      = 'inline';
+        endGameButton.style.display      = 'inline';
+        gameResultsView.style.display    = 'block';
+        _playerFormView.reset();
     }
 
     const reset = function() {
@@ -271,23 +309,33 @@ const View = (function() {
         setGameView();
     }
 
+    const _interactions = function(e){
+        let move = e.target.dataset.space;
+        if(e.target.matches('.start_button')) {
+            e.preventDefault();
+            Game.start();
+        } else 
+        if(e.target.matches('.space')) {
+            e.preventDefault();
+            Game.update(move);
+        } else 
+        if(e.target.matches('.rematch_button')) {
+            Game.reset();
+            Gameboard.reset();
+            reset();
+        } else
+        if(e.target.matches('.end_button')) {
+            Game.initialize();
+        }
+    }
+
     const _setViewInteraction = function() {
-        document.addEventListener('click', (e) => {
-            let move = e.target.dataset.space;
-            if(e.target.matches('.start_button')) {
-                e.preventDefault();
-                Game.start();
-            } else 
-            if(e.target.matches('.space')){
-                e.preventDefault();
-                Game.update(move);
-            } else 
-            if(e.target.matches('.rematch_button')){
-                Game.reset();
-                Gameboard.reset();
-                reset();
-            } 
-        });
+        console.log('listening');
+        document.addEventListener('click', _interactions);
+    }
+
+    const _removeViewInteraction = function(){
+        document.removeEventListener('click', _interactions);
     }
 
     return {
