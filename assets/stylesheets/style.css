@@ -188,15 +188,11 @@ body {
     cursor: pointer;
 }
 
-/* Scoreboard */
-.scoreboard {
-    
-}
-
 .game_container{
     display:flex;
 }
 
+/* Display user info on screen */
 .user_info{
     display: flex;
     flex-direction: column;
