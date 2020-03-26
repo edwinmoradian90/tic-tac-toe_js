@@ -1,63 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link href="https://fonts.googleapis.com/css?family=Bangers|Roboto&display=swap" rel="stylesheet"> 
-        <link rel="stylesheet" href="./assets/stylesheets/style.css">
-        <title>Tic Tac Toe</title>
-    </head>
-    <body>
-        <div class='container'>
 
-            <div class="x1">
-                <div class="cloud"></div>
-            </div>
-            <h1 class='title'>Tic  tac  toe</h1> 
-            <div class="x2">
-                <div class="cloud"></div>
-            </div>
-        
-            <form type="form" class="player_form">
-                <input onfocus=this.value="" type="text" class="player_one_input" placeholder="Player 1">
-                <input type="text" class="player_two_input" placeholder="Player 2">
-                <button class="start_button">Start</button>
-            </form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Bangers|Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/stylesheets/style.css">
+    <title>Tic Tac Toe</title>
+</head>
 
-            <div class="game_container">
-                <div class="user_info">
+<body>
+    <div class='container'>
 
-                    <div class="scoreboard">
-                        <div class="player1">
-                            <h3 class="player_one"></h3>
-                        </div>
-                        <div class="player2">
-                            <h3 class="player_two"></h3>
-                        </div>
+        <div class="x1">
+            <div class="cloud"></div>
+        </div>
+        <h1 class='title'>Tic tac toe</h1>
+        <div class="x2">
+            <div class="cloud"></div>
+        </div>
+
+        <form type="form" class="player_form">
+            <input onfocus=this.value="" type="text" class="player_one_input" placeholder="Player 1">
+            <input type="text" class="player_two_input" placeholder="Player 2">
+            <button class="start_button">Start</button>
+        </form>
+
+        <div class="game_container">
+            <div class="user_info">
+
+                <div class="scoreboard">
+                    <div class="player1">
+                        <h3 class="player_one"></h3>
                     </div>
+                    <div class="player2">
+                        <h3 class="player_two"></h3>
+                    </div>
+                </div>
 
-                    <div class="game_results"></div>
+                <div class="game_results"></div>
+                <div class='button_container'>
                     <button class='rematch_button'>Rematch</button>
                     <button class="end_button">End Game</button>
                 </div>
-
-                <div class="gameboard">
-                    <div class="space" data-space='0'></div>
-                    <div class="space" data-space='1' ></div>
-                    <div class="space" data-space='2' ></div>
-                    <div class="space" data-space='3' ></div>
-                    <div class="space" data-space='4' ></div>
-                    <div class="space" data-space='5' ></div>
-                    <div class="space" data-space='6' ></div>
-                    <div class="space" data-space='7' ></div>
-                    <div class="space" data-space='8' ></div>
-                </div>
-                
             </div>
+
+            <div class="gameboard">
+                <div class="space" data-space='0'></div>
+                <div class="space" data-space='1'></div>
+                <div class="space" data-space='2'></div>
+                <div class="space" data-space='3'></div>
+                <div class="space" data-space='4'></div>
+                <div class="space" data-space='5'></div>
+                <div class="space" data-space='6'></div>
+                <div class="space" data-space='7'></div>
+                <div class="space" data-space='8'></div>
+            </div>
+
         </div>
-        <script src="./assets/scripts/script.js"></script>
-    </body>
+    </div>
+    <script src="./assets/scripts/script.js"></script>
+</body>
 
 
 </html>
