@@ -1,3 +1,6 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable func-names */
 /*
             ==============
             Player Factory
@@ -23,18 +26,18 @@ const Gameboard = (function () {
   const gameboard = '';
 
   const isFull = function () {
-    const isFull = Gameboard.gameboard.filter(space => space == '');
-    const result = (isFull.length == 0);
+    const isFull = Gameboard.gameboard.filter((space) => space === '');
+    const result = (isFull.length === 0);
     return result;
   };
 
   const emptySpace = function (move) {
-    return this.gameboard[move] == '';
+    return this.gameboard[move] === '';
   };
 
   const indexArray = function (playerPiece) {
     const indexArray = this.gameboard.map((piece, i) => {
-      if (piece == playerPiece) {
+      if (piece === playerPiece) {
         return i;
       }
       return null;
@@ -109,16 +112,16 @@ const Game = (function () {
   };
 
   const swapPlayer = function () {
-    Game.currentPlayer = (Game.currentPlayer.id == 1)
+    Game.currentPlayer = (Game.currentPlayer.id === 1)
       ? Game.players[1]
       : Game.players[0];
   };
 
   const _winCondition = function () {
     const arrayMatching = Gameboard.indexArray(Game.currentPlayer.piece);
-    const matched = _winningMoves.map(array => array
-      .filter(array => arrayMatching.includes(array)))
-      .filter(array => array.length === 3);
+    const matched = _winningMoves.map((array) => array
+      .filter((array) => arrayMatching.includes(array)))
+      .filter((array) => array.length === 3);
 
     const result = matched.length > 0;
 
@@ -146,7 +149,8 @@ const Game = (function () {
   const start = function () {
     View.setGameView();
     _setPlayerNames();
-    this.currentPlayer = this.players[0];
+    const [playerOne] = this.players;
+    this.currentPlayer = playerOne;
     View.displayPlayerNames();
   };
 
@@ -165,7 +169,8 @@ const Game = (function () {
   const reset = function () {
     View.reset();
     Gameboard.reset();
-    this.currentPlayer = this.players[0];
+    const [playerOne] = this.players;
+    this.currentPlayer = playerOne;
   };
 
   const initialize = function () {
@@ -210,7 +215,7 @@ const View = (function () {
 
   const _clearBoard = function () {
     const spaces = document.querySelectorAll('.space');
-    spaces.forEach(space => {
+    spaces.forEach((space) => {
       space.innerHTML = '';
     });
   };
