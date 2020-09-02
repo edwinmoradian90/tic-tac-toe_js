@@ -23,7 +23,7 @@ Or [view](https://raw.githack.com/edwinmoradian90/tic-tac-toe_js/game-features/i
 
 ## Authors
 
-**Edwin Moradian**  | [Github](https://github.com/edwinmoradian90) | [LinkedIn](https://linkedin.com/in/edwin-moradian)
+**Edwin Moradian**  | [Github](https://github.com/edwinmoradian90) | [LinkedIn](https://linkedin.com/in/edwin-moradian) | [Portfolio](https://edwin-moradian.firebaseapp.com)
 
 ## License
 
